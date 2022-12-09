@@ -4,36 +4,49 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const { response } = require('express');
 
-const app = express(); 
+const app = express();
+
+const news = [];
 
 const newsSources = [
     { 
         name: 'coindesk',
         address: 'https://www.coindesk.com/markets/',
     },
+    { 
+        name: 'cryptonews',
+        address: 'https://cryptonews.net',
+    },
 ]
 
-app.get('/', (req, res) => {
-    res.json({message: 'Hello there, welcome to Crypto News.'})
-})
-
-app.get('/news', (req, res) => {
-    const news = [];
-
-    axios.get('https://www.coindesk.com/markets/')
+newsSources.forEach((source) => {
+    axios.get(source.address)
         .then(data => {
             const html = data.data;
             const $ = cheerio.load(html);
             $('a:contains("crypto"), a:contains("coin"), a:contains("tokens")', html).each(function () {
                 const title = $(this).text()
                 const url = $(this).attr('href')
-                if(url.includes('markets') || url.includes('business')){
-                    news.push({ title, url })
-                }
+                // if(url.includes('markets') || url.includes('business')){
+                    news.push({ 
+                        title, 
+                        url,
+                        source: source.name,
+                        sourceAddress: source.address,
+                    })
+                // }
             })
-            res.json(news)
         })
         .catch(err => console.log(err))
+})
+
+
+app.get('/', (req, res) => {
+    res.json({message: 'Hello there, welcome to Crypto News.'})
+})
+
+app.get('/news', (req, res) => {
+    res.json(news);
 })
 
 const PORT = process.env.PORT || 5050;
