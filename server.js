@@ -6,6 +6,12 @@ const { response } = require('express');
 
 const app = express(); 
 
+const newsSources = [
+    { 
+        name: 'coindesk',
+        address: 'https://www.coindesk.com/markets/',
+    },
+]
 
 app.get('/', (req, res) => {
     res.json({message: 'Hello there, welcome to Crypto News.'})
@@ -18,10 +24,12 @@ app.get('/news', (req, res) => {
         .then(data => {
             const html = data.data;
             const $ = cheerio.load(html);
-            $('a:contains("crypto"), a:contains("coin")', html).each(function () {
+            $('a:contains("crypto"), a:contains("coin"), a:contains("tokens")', html).each(function () {
                 const title = $(this).text()
                 const url = $(this).attr('href')
-                news.push({ title, url })
+                if(url.includes('markets') || url.includes('business')){
+                    news.push({ title, url })
+                }
             })
             res.json(news)
         })
