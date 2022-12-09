@@ -12,10 +12,12 @@ const newsSources = [
     { 
         name: 'coindesk',
         address: 'https://www.coindesk.com/markets/',
+        base: 'https://www.coindesk.com/',
     },
     { 
         name: 'cryptonews',
         address: 'https://cryptonews.net',
+        base: 'https://cryptonews.net',
     },
 ]
 
@@ -30,7 +32,7 @@ newsSources.forEach((source) => {
                 // if(url.includes('markets') || url.includes('business')){
                     news.push({ 
                         title, 
-                        url,
+                        url: source.base + url,
                         source: source.name,
                         sourceAddress: source.address,
                     })
