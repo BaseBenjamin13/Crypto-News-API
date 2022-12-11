@@ -55,9 +55,25 @@ app.get('/news', (req, res) => {
 
 app.get('/news/:newsId', async (req, res) => {
     const newsId = req.params.newsId;
+    const newsSource = await newsSources.filter(source => source.Id == newsId)[0];
+    const newsById = [];
 
-    const newsAdress = await newsSources.filter(source => source.Id == newsId)[0].address;
-
+    await axios.get(newsSource.address)
+        .then(data => {
+            const html = data.data;
+            const $ = cheerio.load(html);
+            $('a:contains("crypto"), a:contains("coin"), a:contains("tokens")', html).each(function () {
+                const title = $(this).text()
+                const url = $(this).attr('href')
+                    newsById.push({ 
+                        title, 
+                        url: newsSource.base + url,
+                        source: newsSource.name,
+                        sourceAddress: newsSource.address,
+                    })
+            })
+        })
+    res.json(newsById);
 })
 
 const PORT = process.env.PORT || 5050;

@@ -2,6 +2,9 @@
 
 ✅ Add url base, so returned news link will take user to current location.
 
+make reusable function for getting all news from source.
+    can be used inside the foreach, and ById route.
+
 Add url branch to newsSources object.
     use it to return news only if branch is included in url.
     to evode returning header links and stuff.
