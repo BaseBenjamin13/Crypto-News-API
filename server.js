@@ -14,12 +14,14 @@ const newsSources = [
         name: 'coindesk',
         address: 'https://www.coindesk.com/markets/',
         base: 'https://www.coindesk.com',
+        urlBranch: 'markets',
         Id: 1,
     },
     { 
         name: 'cryptonews',
         address: 'https://cryptonews.net',
         base: 'https://cryptonews.net',
+        urlBranch: '',
         Id: 2,
     },
 ]
@@ -32,12 +34,14 @@ async function getNews(tempNewsSource, news){
             $('a:contains("crypto"), a:contains("coin"), a:contains("tokens")', html).each(function () {
                 const title = $(this).text()
                 const url = $(this).attr('href')
-                news({ 
-                    title, 
-                    url: tempNewsSource.base + url,
-                    source: tempNewsSource.name,
-                    sourceAddress: tempNewsSource.address,
-                })
+                if(url.includes(tempNewsSource.urlBranch)){
+                    news({ 
+                        title, 
+                        url: tempNewsSource.base + url,
+                        source: tempNewsSource.name,
+                        sourceAddress: tempNewsSource.address,
+                    })
+                }
             })
         })
         .catch(err => console.log(err))
