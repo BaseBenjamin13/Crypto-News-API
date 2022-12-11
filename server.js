@@ -13,11 +13,13 @@ const newsSources = [
         name: 'coindesk',
         address: 'https://www.coindesk.com/markets/',
         base: 'https://www.coindesk.com/',
+        Id: 1,
     },
     { 
         name: 'cryptonews',
         address: 'https://cryptonews.net',
         base: 'https://cryptonews.net',
+        Id: 2,
     },
 ]
 
@@ -49,6 +51,13 @@ app.get('/', (req, res) => {
 
 app.get('/news', (req, res) => {
     res.json(news);
+})
+
+app.get('/news/:newsId', async (req, res) => {
+    const newsId = req.params.newsId;
+
+    const newsAdress = await newsSources.filter(source => source.Id == newsId)[0].address;
+
 })
 
 const PORT = process.env.PORT || 5050;
