@@ -7,6 +7,7 @@ const { response } = require('express');
 const app = express();
 
 const news = [];
+const newsById = [];
 
 const newsSources = [
     { 
@@ -23,25 +24,27 @@ const newsSources = [
     },
 ]
 
-newsSources.forEach((source) => {
-    axios.get(source.address)
+async function getNews(tempNewsSource, news){
+    await axios.get(tempNewsSource.address)
         .then(data => {
             const html = data.data;
             const $ = cheerio.load(html);
             $('a:contains("crypto"), a:contains("coin"), a:contains("tokens")', html).each(function () {
                 const title = $(this).text()
                 const url = $(this).attr('href')
-                // if(url.includes('markets') || url.includes('business')){
-                    news.push({ 
-                        title, 
-                        url: source.base + url,
-                        source: source.name,
-                        sourceAddress: source.address,
-                    })
-                // }
+                news({ 
+                    title, 
+                    url: tempNewsSource.base + url,
+                    source: tempNewsSource.name,
+                    sourceAddress: tempNewsSource.address,
+                })
             })
         })
         .catch(err => console.log(err))
+}
+
+newsSources.forEach((source) => {
+    getNews(source, news.push.bind(news))
 })
 
 
@@ -54,27 +57,15 @@ app.get('/news', (req, res) => {
 })
 
 app.get('/news/:newsId', async (req, res) => {
+    newsById.length = 0;
     const newsId = req.params.newsId;
     const newsSource = await newsSources.filter(source => source.Id == newsId)[0];
-    const newsById = [];
+    await getNews(newsSource, newsById.push.bind(newsById))
 
-    await axios.get(newsSource.address)
-        .then(data => {
-            const html = data.data;
-            const $ = cheerio.load(html);
-            $('a:contains("crypto"), a:contains("coin"), a:contains("tokens")', html).each(function () {
-                const title = $(this).text()
-                const url = $(this).attr('href')
-                    newsById.push({ 
-                        title, 
-                        url: newsSource.base + url,
-                        source: newsSource.name,
-                        sourceAddress: newsSource.address,
-                    })
-            })
-        })
-    res.json(newsById);
+    res.json(newsById)
 })
+
+
 
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => console.log(`server running on PORT: ${PORT}`));
