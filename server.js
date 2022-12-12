@@ -60,6 +60,16 @@ app.get('/news', (req, res) => {
     res.json(news);
 })
 
+app.get('/test', (req, res) => {
+    axios.get('https://cryptonews.com', { 
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+    })
+        .then(data => {
+            console.log(data)
+        })
+        .catch(err => console.log(err))
+})
+
 app.get('/news/:newsId', async (req, res) => {
     newsById.length = 0;
     const newsId = req.params.newsId;
