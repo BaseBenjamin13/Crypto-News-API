@@ -18,16 +18,25 @@ const newsSources = [
         Id: 1,
     },
     { 
-        name: 'cryptonews',
+        name: 'cryptonews.net',
         address: 'https://cryptonews.net',
         base: 'https://cryptonews.net',
         urlBranch: '',
         Id: 2,
     },
+    { 
+        name: 'cryptonews.com',
+        address: 'https://cryptonews.com/news/',
+        base: 'https://cryptonews.com',
+        urlBranch: 'news',
+        Id: 3,
+    },
 ]
 
 async function getNews(tempNewsSource, news){
-    await axios.get(tempNewsSource.address)
+    await axios.get(tempNewsSource.address, { 
+        headers: { "Accept-Encoding": "gzip,deflate,compress" } 
+    })
         .then(data => {
             const html = data.data;
             const $ = cheerio.load(html);
