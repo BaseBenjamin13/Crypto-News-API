@@ -1,0 +1,25 @@
+{
+    "sources": [
+        { 
+            "name": "coindesk",
+            "address": "https://www.coindesk.com/markets/",
+            "base": "https://www.coindesk.com",
+            "urlBranch": "markets",
+            "Id": 1
+        },
+        { 
+            "name": "cryptonews.net",
+            "address": "https://cryptonews.net",
+            "base": "https://cryptonews.net",
+            "urlBranch": "",
+            "Id": 2
+        },
+        { 
+            "name": "cryptonews.com",
+            "address": "https://cryptonews.com/news/",
+            "base": "https://cryptonews.com",
+            "urlBranch": "news",
+            "Id": 3
+        }
+    ]
+}

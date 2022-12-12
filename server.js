@@ -3,35 +3,13 @@ const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { response } = require('express');
+const newsSources = require('./sources.json');
 
 const app = express();
 
 const news = [];
 const newsById = [];
 
-const newsSources = [
-    { 
-        name: 'coindesk',
-        address: 'https://www.coindesk.com/markets/',
-        base: 'https://www.coindesk.com',
-        urlBranch: 'markets',
-        Id: 1,
-    },
-    { 
-        name: 'cryptonews.net',
-        address: 'https://cryptonews.net',
-        base: 'https://cryptonews.net',
-        urlBranch: '',
-        Id: 2,
-    },
-    { 
-        name: 'cryptonews.com',
-        address: 'https://cryptonews.com/news/',
-        base: 'https://cryptonews.com',
-        urlBranch: 'news',
-        Id: 3,
-    },
-]
 
 async function getNews(tempNewsSource, news){
     await axios.get(tempNewsSource.address, { 
@@ -56,7 +34,7 @@ async function getNews(tempNewsSource, news){
         .catch(err => console.log(err))
 }
 
-newsSources.forEach((source) => {
+newsSources.sources.forEach((source) => {
     getNews(source, news.push.bind(news))
 })
 
@@ -82,7 +60,7 @@ app.get('/test', (req, res) => {
 app.get('/news/:newsId', async (req, res) => {
     newsById.length = 0;
     const newsId = req.params.newsId;
-    const newsSource = await newsSources.filter(source => source.Id == newsId)[0];
+    const newsSource = await newsSources.sources.filter(source => source.Id == newsId)[0];
     await getNews(newsSource, newsById.push.bind(newsById))
 
     res.json(newsById)

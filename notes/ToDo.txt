@@ -9,4 +9,4 @@
     use it to return news only if branch is included in url.
     to evode returning header links and stuff.
 
-turn newsSources array into external .json file.
+✅ turn newsSources array into external .json file.
